@@ -55,6 +55,7 @@ public class ECommerceAPITest {
 		JsonPath js= new JsonPath(addproductresponse);
 		String productId=js.get("productId");
 		
+		
 		//Create Order
 		RequestSpecification CreateBaseReq=new RequestSpecBuilder().setBaseUri("https://rahulshettyacademy.com")
 				.addHeader("Authorization", token).setContentType(ContentType.JSON).build();
@@ -72,6 +73,10 @@ public class ECommerceAPITest {
 		String responseAddOrder=createorder.when().post("/api/ecom/order/create-order").then().log().all().extract().response().asString();
 		System.out.println(responseAddOrder);
 		
+		JsonPath js2= new JsonPath(responseAddOrder);
+		String orderId=js2.get("orders");
+		System.out.println(orderId);
+		
 		//Delete Product
 		RequestSpecification DeleteProductBaseReq=new RequestSpecBuilder().setBaseUri("https://rahulshettyacademy.com")
 				.addHeader("Authorization", token).setContentType(ContentType.JSON).build();
@@ -85,8 +90,14 @@ public class ECommerceAPITest {
 		Assert.assertEquals("Product Deleted Successfully", js1.get("message"));
 		
 		//Delete Product from Order History Page
-		RequestSpecification DeleteProductOrderHistoryReq=new RequestSpecBuilder().setBaseUri("https://rahulshettyacademy.com")
+		RequestSpecification DeleteOrderID=new RequestSpecBuilder().setBaseUri("https://rahulshettyacademy.com")
 				.addHeader("Authorization", token).setContentType(ContentType.JSON).build();
+		
+		RequestSpecification deleteprodorderID=given().log().all().spec(DeleteOrderID).pathParam("orders", orderId);
+		
+		String finalresponse=deleteprodorderID.when().delete("/api/ecom/product/delete-product/65f136fba86f8f74dc9ae644").then().log().all().extract()
+		.response().asString();
+		System.out.println(finalresponse);
 		
 		
 		
